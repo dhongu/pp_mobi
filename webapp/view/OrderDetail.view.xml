@@ -153,8 +153,8 @@
 		<footer>
 			<Bar>
 				<contentLeft>
-					<ToggleButton pressed="true" id="buttonScann" icon="sap-icon://bar-code" text="Mod Scanare" />
-					<ToggleButton icon="sap-icon://broken-link" enabled="true" pressed="false" press="onPressEditMaterial" visible="false"/>
+					<Button id="buttonScann" icon="sap-icon://bar-code" text="Mod Scanare" class="checkedButton"/>
+					<ToggleButton icon="sap-icon://broken-link" enabled="true" pressed="false" press="onPressEditMaterial" visible="false" class="uncheckedButton" />
 				</contentLeft>
 				<contentRight>
 					<Button id="buttonSave" visible="false" icon="sap-icon://save" press="onPressSave" type="Accept" text="Confirmare"/>

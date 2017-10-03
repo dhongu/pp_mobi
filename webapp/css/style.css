@@ -39,3 +39,14 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 .sapRed {
 	color: red;
 }
+
+.checkedButton:focus{
+  background-color: green !important;
+  outline-color: transparent !important;
+
+}
+
+.checkedButton{
+  background-color: red!important;
+  outline-color: transparent !important;
+}

@@ -72,14 +72,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				return oOrderDetailModel;
 			},
 
-			onObjectMatched: function(oEvent) {
+			doFinishMatched:function(oEvent) {
 				var self = this;
-				BarCodeScanner.connect(function(barcode) {
-					self.onScan(barcode);
-				});
-
 				var oOwner = this.getOwnerComponent();
-
+				
 				var id = oEvent.getParameter("arguments").id;
 
 				var oView = this.getView();
@@ -174,7 +170,40 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				jQuery.sap.require("sap.ui.model.Context");
 				var newContext = new sap.ui.model.Context(oView.getModel(), "/ROOT/ORDERS/" + id);
 				oView.setBindingContext(newContext);
+				
+				
+			},
 
+			onObjectMatched: function(oEvent) {
+				var self = this;
+				BarCodeScanner.connect(function(barcode) {
+					self.onScan(barcode);
+				});
+				
+				var self = this;
+				var oOwner = this.getOwnerComponent();
+				var oView = this.getView();
+				var id = oEvent.getParameter("arguments").id;
+
+				var oData = oView.getModel().getData();
+				oData.Order = oData.ROOT.ORDERS[id];				
+				
+				
+				// meg in SAP si citesc aceasta comanda, la citire in SAP se va face si lock pe materiale
+				var oDataModel = new JSONModel();
+				var oParam = { "detail":"order",
+							   "order" : oData.Order.HEADER.PLANNEDORDER_NUM };
+				oOwner._loadResource(oDataModel, oParam, function(oRequest) {
+					var success = oRequest.getParameter("success");
+			        var oAllDataModel = oRequest.oSource;
+			        if (success) {
+			          MessageToast.show("Date incarcate din SAP cu succes");
+			        } else {
+			          MessageBox.error("Nu se poate accesa serverul de SAP");
+			        }
+				});
+				
+				this.doFinishMatched(oEvent);
 			},
 
 			onScan: function(barcode) {

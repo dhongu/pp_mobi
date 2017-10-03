@@ -58,7 +58,7 @@ xmlns:mvc="sap.ui.core.mvc"
           <attributes>
             <ObjectAttribute title="Produs" text="{HEADER/MATERIAL}"/>
             <ObjectAttribute title="Cantitate planificata" text="{HEADER/TOTAL_PLORD_QTY} {path:'HEADER/BASE_UOM', formatter: '.formatter.uom'}"/>
-            <ObjectAttribute title="Data Start" text="{HEADER/ORDER_START_DATE}" />
+            <ObjectAttribute title="Data Start" text="{HEADER/ORDER_START_DATE}"  class="comandaStartDate" />
             <ObjectAttribute title="Data Final" text="{HEADER/ORDER_FIN_DATE}" />
             <ObjectAttribute title="Observatie" text="{HEADER/ZZOBS}" />
           </attributes>
