@@ -24,16 +24,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 
 			formatter: formatter,
 
-			/* =========================================================== */
-			/* lifecycle methods */
-			/* =========================================================== */
-
-			/**
-			 * Called when the worklist controller is instantiated.
-			 *
-			 * @public
-			 */
+ 
 			onInit: function() {
+				var self = this;
 				var oView = this.getView();
 
 				var iOriginalBusyDelay, oViewModel = new JSONModel({
@@ -45,13 +38,39 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				oView.setModel(oOrderModel);
 
 				var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-
 				oRouter.getRoute("orderdetail").attachPatternMatched(this.onObjectMatched, this);
-
+				
+				oRouter.attachBypassed(function (oEvent) {
+					var sHash = oEvent.getParameter("hash");
+					// do something here, i.e. send logging data to the backend for analysis
+					// telling what resource the user tried to access...
+					jQuery.sap.log.info("Sorry, but the hash '" + sHash + "' is invalid.", "The resource was not found.");
+				});
+				
 				this.initOrderDetail();
-
+								// event fired when the user changes the URL, e.g. forward or back navigation
+				// you need to implement the handleNavigate handler
+				
+				//jQuery(window).on("navigate", this.onNavigate);
+				// event fired when the user tries to close the browser or reload the page
+				// you need to implement the handleBeforeUnload handler
+				//jQuery(window).on('beforeunload', this.onNavBack);
+				 
 			},
 
+			onBack :function(oEvent) {
+				//popstate 
+				var oView = this.getView();
+				var oData = oView.getModel().getData();
+				var oOwner = this.getOwnerComponent();
+				oOwner.unlock_order(oData.Order.HEADER.PLANNEDORDER_NUM, self.onFinishNavBack );
+
+				console.log("E bine a ajuns aici!");
+				jQuery(window).off("popstate"); // dezactivare 
+			},
+			
+
+			
 			initOrderDetail: function() {
 				var oView = this.getView();
 				var oOrderDetailModel = new JSONModel({
@@ -72,10 +91,15 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				return oOrderDetailModel;
 			},
 
-			doFinishMatched:function(oEvent) {
+			doFinishMatched: function(oEvent) {
 				var self = this;
-				var oOwner = this.getOwnerComponent();
+				//popstate 
+				jQuery(window).on("popstate", function (oEvent) {
+					self.onBack(oEvent);
+				});
 				
+				var oOwner = this.getOwnerComponent();
+
 				var id = oEvent.getParameter("arguments").id;
 
 				var oView = this.getView();
@@ -120,8 +144,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 					if (typeof(oData.Order.COMPONENTS[i].BATCH) === "undefined") {
 						oData.Order.COMPONENTS[i].BATCH = '';
 					}
-					if (oData.Order.COMPONENTS[i].BATCH != ''){
-						oData.editYeld = false;	
+					if (oData.Order.COMPONENTS[i].BATCH != '') {
+						oData.editYeld = false;
 					}
 				}
 
@@ -170,8 +194,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				jQuery.sap.require("sap.ui.model.Context");
 				var newContext = new sap.ui.model.Context(oView.getModel(), "/ROOT/ORDERS/" + id);
 				oView.setBindingContext(newContext);
-				
-				
+
 			},
 
 			onObjectMatched: function(oEvent) {
@@ -179,32 +202,84 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				BarCodeScanner.connect(function(barcode) {
 					self.onScan(barcode);
 				});
-				
+
 				var self = this;
 				var oOwner = this.getOwnerComponent();
 				var oView = this.getView();
 				var id = oEvent.getParameter("arguments").id;
 
 				var oData = oView.getModel().getData();
-				oData.Order = oData.ROOT.ORDERS[id];				
-				
-				
-				// meg in SAP si citesc aceasta comanda, la citire in SAP se va face si lock pe materiale
-				var oDataModel = new JSONModel();
-				var oParam = { "detail":"order",
-							   "order" : oData.Order.HEADER.PLANNEDORDER_NUM };
-				oOwner._loadResource(oDataModel, oParam, function(oRequest) {
-					var success = oRequest.getParameter("success");
-			        var oAllDataModel = oRequest.oSource;
-			        if (success) {
-			          MessageToast.show("Date incarcate din SAP cu succes");
-			        } else {
-			          MessageBox.error("Nu se poate accesa serverul de SAP");
-			        }
-				});
-				
+				oData.Order = oData.ROOT.ORDERS[id];
+
 				this.doFinishMatched(oEvent);
 			},
+
+			/* =========================================================== */
+			/* event handlers */
+			/* =========================================================== */
+
+			/**
+			 * Event handler for navigating back. It checks if there is a history
+			 * entry. If yes, history.go(-1) will happen. If not, it will replace
+			 * the current entry of the browser history with the worklist route.
+			 *
+			 * @public
+			 */
+			onNavBack: function(oEvent) {
+				
+				var self = this;
+				var oView = this.getView();
+				var oModelOrder = oView.getModel("orderlist");
+				var oData = oView.getModel().getData();
+				var oOwner = this.getOwnerComponent();
+
+				var sNamespace = this.getOwnerComponent().getMetadata().getManifestEntry("sap.app").id;
+				localStorage.setItem(sNamespace + '.orders', oModelOrder.getJSON());
+
+				BarCodeScanner.disconnect();
+				if (oEvent.sId !== "navButtonPress") {
+					oModelOrder.oController.handleRefresh();
+				}
+
+				/*
+				// merg in SAP sa recitesc comanda si sa deblochez materialele
+				var oDataModel = new JSONModel();
+				var oParam = {
+					"detail": "order_unlock",
+					"order": oData.Order.HEADER.PLANNEDORDER_NUM
+				};
+				oOwner._loadResource(oDataModel, oParam, function(oRequest) {
+					var success = oRequest.getParameter("success");
+					var oAllDataModel = oRequest.oSource;
+					if (success) {
+						MessageToast.show("Materialele au fost deblocate");
+					} else {
+						MessageBox.error("Nu se poate accesa serverul de SAP");
+					}
+					self.onFinishNavBack();
+				});
+				*/
+			},
+
+			onFinishNavBack: function() {
+				var oHistory = History.getInstance();
+				var sPreviousHash = oHistory.getPreviousHash();
+				if (sPreviousHash !== undefined) {
+					// The history contains a previous entry
+					history.go(-1);
+				} else {
+					// Otherwise we go backwards with a forward
+					// history
+					var bReplace = true;
+					var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+					var oViewOrderDetail = this.getView('orderlist');
+					BarCodeScanner.connect(function(barcode) {
+						oViewOrderDetail.onScan(barcode);
+					});
+					oRouter.navTo("orderlist", {}, bReplace);
+				}				
+			},
+
 
 			onScan: function(barcode) {
 				MessageToast.show("Lot scanat: " + barcode);
@@ -272,53 +347,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				this.onScan('0003');
 			},
 
-			/* =========================================================== */
-			/* event handlers */
-			/* =========================================================== */
-
-			/**
-			 * Event handler for navigating back. It checks if there is a history
-			 * entry. If yes, history.go(-1) will happen. If not, it will replace
-			 * the current entry of the browser history with the worklist route.
-			 *
-			 * @public
-			 */
-			onNavBack: function(oEvent) {
-				var oHistory = History.getInstance();
-				var sPreviousHash = oHistory.getPreviousHash();
-				var oView = this.getView();
-				var oModelOrder = oView.getModel("orderlist");
-				var sNamespace = this.getOwnerComponent().getMetadata().getManifestEntry("sap.app").id;
-				localStorage.setItem(sNamespace + '.orders', oModelOrder.getJSON());
-
-				BarCodeScanner.disconnect();
-				if (oEvent.sId !== "navButtonPress") {
-					oModelOrder.oController.handleRefresh();
-					//oController = this.getView().getController();
-					//oController.loadOrders();
-					//if (oModelOrder.TestData) {
-					//  oModelOrder.oController.handleLocalDataTest();
-					//} else {
-					//  oModelOrder.oController.loadOrders({'detail':'line','prod_line':value});
-					//}
-				}
-
-				if (sPreviousHash !== undefined) {
-					// The history contains a previous entry
-					history.go(-1);
-				} else {
-					// Otherwise we go backwards with a forward
-					// history
-					var bReplace = true;
-					var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-					var oViewOrderDetail = this.getView('orderlist');
-					BarCodeScanner.connect(function(barcode) {
-						oViewOrderDetail.onScan(barcode);
-					});
-					oRouter.navTo("orderlist", {}, bReplace);
-				}
-			},
-
 			messagePopoverOpen: function(oEvent) {
 				var oView = this.getView();
 				var oData = oView.getModel().getData();
@@ -379,17 +407,16 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				this.doSave(true);
 			},
 
-			doSave: function(oPrint){
+			doSave: function(oPrint) {
 				var that = this;
 				var oView = this.getView();
 				var LotOK = this.doCheckBatch();
 				var oData = oView.getModel().getData();
 				var oOrderDetailModel = oView.getModel("orderdetail");
 				var oDataDetail = oOrderDetailModel.getData();
-				
-				
-				if (oDataDetail.IsYeld && ( oData.Order.HEADER.YELD == 0 || oData.Order.HEADER.YELD == '') )	{
-						return MessageBox.error("Va rog sa introduceti cantitatea produsa!");	
+
+				if (oDataDetail.IsYeld && (oData.Order.HEADER.YELD == 0 || oData.Order.HEADER.YELD == '')) {
+					return MessageBox.error("Va rog sa introduceti cantitatea produsa!");
 				}
 				if (!LotOK) {
 					var userID = '';
@@ -416,7 +443,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 						}
 					}
 
-				);				
+				);
 			},
 
 			onChangeRepPoint: function(oEvent) {
@@ -812,7 +839,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				} else {
 					oDataDetail.IsYeld = true;
 					oData.Order.HEADER.YELD = oData.Order.HEADER.TOTAL_PLORD_QTY;
-					oDataDetail.rebutComp = false;                         
+					oDataDetail.rebutComp = false;
 					oDataDetail.txtYeldOrScrap = "obtinuta";
 					oData.title = 'Confirmare productie';
 					self.doSetColor(oDataDetail.IsYeld);
@@ -956,7 +983,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 						var oContextCharg = aContexts[0];
 						var valueCharg = oContextCharg.getProperty();
 					}
-					
+
 					var oView = this.getView();
 					var oData = oView.getModel().getData();
 					var comp;
@@ -973,7 +1000,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 						return;
 					}
 					oData.editYeld = false; // daca am selectat un lot nu mai am voie sa modific cantitatea
-					
+
 					var productInput = this.getView().byId(this.inputId);
 					productInput.setValue(oSelectedItem.getTitle());
 
