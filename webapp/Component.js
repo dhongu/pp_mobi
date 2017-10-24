@@ -19,9 +19,9 @@ sap.ui.define([
 			var oOrderModel = this.getModel("orderlist");
 			var oData = oOrderModel.getData();
 			if (oData.Order) {
-				this.unlock_order(oData.Order.HEADER.PLANNEDORDER_NUM);
+				return $.when( this.unlock_order(oData.Order.HEADER.PLANNEDORDER_NUM)).then(true);
 			}
-
+			console.log('Am iesit');
 		},
 
 		onWindowUnload: function(oEvent) {

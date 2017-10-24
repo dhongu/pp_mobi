@@ -40,12 +40,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 				oRouter.getRoute("orderdetail").attachPatternMatched(this.onObjectMatched, this);
 				
-				oRouter.attachBypassed(function (oEvent) {
-					var sHash = oEvent.getParameter("hash");
-					// do something here, i.e. send logging data to the backend for analysis
-					// telling what resource the user tried to access...
-					jQuery.sap.log.info("Sorry, but the hash '" + sHash + "' is invalid.", "The resource was not found.");
-				});
+ 
 				
 				this.initOrderDetail();
 								// event fired when the user changes the URL, e.g. forward or back navigation
@@ -240,25 +235,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				if (oEvent.sId !== "navButtonPress") {
 					oModelOrder.oController.handleRefresh();
 				}
+				
+				self.onFinishNavBack();
 
-				/*
-				// merg in SAP sa recitesc comanda si sa deblochez materialele
-				var oDataModel = new JSONModel();
-				var oParam = {
-					"detail": "order_unlock",
-					"order": oData.Order.HEADER.PLANNEDORDER_NUM
-				};
-				oOwner._loadResource(oDataModel, oParam, function(oRequest) {
-					var success = oRequest.getParameter("success");
-					var oAllDataModel = oRequest.oSource;
-					if (success) {
-						MessageToast.show("Materialele au fost deblocate");
-					} else {
-						MessageBox.error("Nu se poate accesa serverul de SAP");
-					}
-					self.onFinishNavBack();
-				});
-				*/
 			},
 
 			onFinishNavBack: function() {
