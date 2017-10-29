@@ -653,9 +653,11 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				var oData = oView.getModel().getData();
 				var LotOK = true;
 				for (var comp in oData.Order.COMPONENTS) {
+					if (oData.Order.HEADER.REPPOINT == '' || oData.Order.HEADER.REPPOINT == oData.Order.COMPONENTS[comp].ACTIVITY ) {      
 					// se recalculeaza cantitatea doar la produele la care nu a fost scanat un lot
-					if (oData.Order.COMPONENTS[comp].BATCH === '' && oData.Order.COMPONENTS[comp].CONF_QUAN > 0) {
-						LotOK = false;
+						if (oData.Order.COMPONENTS[comp].BATCH === '' && oData.Order.COMPONENTS[comp].CONF_QUAN > 0) {
+							LotOK = false;
+						}
 					}
 				}
 				return LotOK;
