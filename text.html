@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+
+window.onload = function() {
+    var field = document.getElementById("foo");
+    var button = document.getElementById("bar");
+    button.addEventListener("click", function(event) {
+        var keyEvent = document.createEvent("KeyboardEvent");
+        keyEvent.initKeyEvent("keypress", true, true, null, false, false, false, false, 8, 0);
+        field.dispatchEvent(keyEvent);
+    }, false);
+}
+
+</script>
+
+</head>
+<body>
+<div>
+<input type="text" id="foo" value="abcdef">
+<button id="bar" type="button">Fire key event</button>
+</div>
+</body>
+</html>

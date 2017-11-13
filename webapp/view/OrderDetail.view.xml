@@ -106,7 +106,7 @@
 								<!--
                 <ObjectNumber number="{REQ_QUAN}" unit="{BASE_UOM}" />
                 -->
-								<Input id="productInputLot" value="{BATCH}" enabled="true" filterSuggests="false" showValueHelp="true" maxSuggestionWidth="50%"
+								<Input id="productInputLot" value="{BATCH}" valueHelpOnly="true" enabled="true" filterSuggests="false" showValueHelp="true" maxSuggestionWidth="50%"
 									valueHelpRequest="handleValueRequestCharg"/>
 								<!--
                  <Input value="{CONF_QUAN}" editable="{/compEdit}" valueLiveUpdate="True" liveChange="handleChangeConfQty" type="Number" class="sapInputRight" 
