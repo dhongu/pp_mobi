@@ -174,6 +174,13 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 						} else {
 							oDataDetail.EnableRebut = false;
 						}
+						if (oDataLines.ROOT.LINES[i].SEL_LOT == 'X') {
+							oDataDetail.EnableSelLot = true;
+						} else {
+							oDataDetail.EnableSelLot	 = false;
+						}
+						
+						
 						oDataDetail.super_user = oDataLines.ROOT.LINES[i].SUPER_USER;
 					}
 				}
@@ -636,8 +643,19 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 
 			handleChangeYeld: function(oEvent) {
 				var newValue = oEvent.getParameter("value");
+				var oInputControl = oEvent.getSource();
+				var oView = this.getView();
+				var oData = oView.getModel().getData();
+				if (newValue > oData.Order.HEADER.TOTAL_PLORD_QTY) {
+					newValue = oData.Order.HEADER.TOTAL_PLORD_QTY;
+					oData.Order.HEADER.YELD = newValue;
+					oView.getModel().setData(oData);
+					
+					oInputControl.setValue(newValue);
+				} 
+			 
 				this.doChangeYeld(newValue);
-
+			 
 			},
 
 			onPressClearQty: function(oEvent) {
@@ -956,6 +974,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 			},
 
 			_handleValueHelpCloseCharg: function(oEvent) {
+				var oView = this.getView();
+				var oDataDetail = oView.getModel("orderdetail").getData();
+				if (!oDataDetail.EnableSelLot) {
+					MessageToast.show("Lotul rebuie scanat");
+						return;
+				}
 				var oSelectedItem = oEvent.getParameter("selectedItem");
 
 				if (oSelectedItem) {

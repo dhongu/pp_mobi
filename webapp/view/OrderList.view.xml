@@ -54,11 +54,21 @@ xmlns:mvc="sap.ui.core.mvc"
         </Toolbar>
       </headerToolbar>
       <items>
-        <ObjectListItem press="onPressOrder" type="Navigation" title="{HEADER/SHORT_TEXT}" number="{HEADER/PLANNEDORDER_NUM}">
+        <ObjectListItem press="onPressOrder" type="Navigation" title="{HEADER/SHORT_TEXT}" number="{HEADER/PLANNEDORDER_NUM}"  class="myTest">
+          
+            <firstStatus>
+				<ObjectStatus
+					text="{HEADER/ORDER_START_DATE}"
+					state="{
+						path: 'HEADER/ORDER_START_DATE',
+						formatter: '.formatter.today_status'
+					}" />
+			</firstStatus>
+          
           <attributes>
-            <ObjectAttribute title="Produs" text="{HEADER/MATERIAL}"/>
+            <ObjectAttribute title="Produs" text="{HEADER/MATERIAL}" class="myTest"/>
             <ObjectAttribute title="Cantitate planificata" text="{HEADER/TOTAL_PLORD_QTY} {path:'HEADER/BASE_UOM', formatter: '.formatter.uom'}"/>
-            <ObjectAttribute title="Data Start" text="{HEADER/ORDER_START_DATE}"  class="comandaStartDate" />
+            <ObjectAttribute title="Data Start" text="{HEADER/ORDER_START_DATE}"   />
             <ObjectAttribute title="Data Final" text="{HEADER/ORDER_FIN_DATE}" />
             <ObjectAttribute title="Observatie" text="{HEADER/ZZOBS}" />
           </attributes>

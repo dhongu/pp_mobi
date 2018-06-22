@@ -35,6 +35,10 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 	background-color: aquamarine;
 }
 
+.myTest{
+	 font-weight: bold;
+	 color: red;
+}
 
 .sapRed {
 	color: red;

@@ -44,6 +44,19 @@ sap.ui.define(function() {
 			}
 		},
 
+		today_status:function(sDate){
+			var plan_date = new Date(sDate).toDateString();
+			var today = new Date().toDateString();
+			if (plan_date !== today){
+				return "Error";
+			}
+			else{
+				return "Success";	
+			}
+			
+		},
+
+
 		status: function(sStatus) {
 			if (sStatus === "Available") {
 				return "Success";
