@@ -2,7 +2,7 @@
 xmlns:u="sap.ui.unified"
 xmlns="sap.m"
 xmlns:mvc="sap.ui.core.mvc"
-  xmlns:core="sap.ui.core"
+xmlns:core="sap.ui.core"
 
 
   >
@@ -26,7 +26,7 @@ xmlns:mvc="sap.ui.core.mvc"
   <Page id="pageOrderList" title="{i18n>MainTitlePage}">
     <List id="orderList"  width="auto"
       items="{ path : '/ROOT/ORDERS',
-          sorter : { path : 'HEADER/ZZPRIO', group : true  },
+          sorter : { path : 'HEADER/ORDER_START_DATE', group : true  },
           groupHeaderFactory: '.getGroupHeader'
           }">
       <headerToolbar>
@@ -36,7 +36,7 @@ xmlns:mvc="sap.ui.core.mvc"
           <ToolbarSpacer/>
           <SearchField width="50%" search="onFilterOrders" selectOnFocus="false"/>
           -->
-          
+
           <Label text="{i18n>LabelLinieProductie}"/>
           <Select id="productionLine"  width="40%"  change="onChangeProductionLine" value="{ProductionLine}"
           showSecondaryValues="true" items="{ path: 'ProductionLineCollection>/ROOT/LINES', sorter: { path: 'ARBPL' } }">
@@ -54,23 +54,23 @@ xmlns:mvc="sap.ui.core.mvc"
         </Toolbar>
       </headerToolbar>
       <items>
-        <ObjectListItem press="onPressOrder" type="Navigation" title="{HEADER/SHORT_TEXT}" number="{HEADER/PLANNEDORDER_NUM}"  class="myTest">
-          
-            <firstStatus>
-				<ObjectStatus
-					text="{HEADER/ORDER_START_DATE}"
-					state="{
-						path: 'HEADER/ORDER_START_DATE',
-						formatter: '.formatter.today_status'
-					}" />
-			</firstStatus>
-          
+          <ObjectListItem id="alexandru" press="onPressOrder" type="Navigation" title="{HEADER/SHORT_TEXT}" number="{HEADER/PLANNEDORDER_NUM}" class="zzzClass">
+
+          <firstStatus>
+            <ObjectStatus
+              text="{HEADER/ORDER_START_DATE}"
+              state="{
+                path: 'HEADER/ORDER_START_DATE',
+                formatter: '.formatter.today_status'
+              }" />
+          </firstStatus>
+
           <attributes>
-            <ObjectAttribute title="Produs" text="{HEADER/MATERIAL}" class="myTest"/>
-            <ObjectAttribute title="Cantitate planificata" text="{HEADER/TOTAL_PLORD_QTY} {path:'HEADER/BASE_UOM', formatter: '.formatter.uom'}"/>
-            <ObjectAttribute title="Data Start" text="{HEADER/ORDER_START_DATE}"   />
-            <ObjectAttribute title="Data Final" text="{HEADER/ORDER_FIN_DATE}" />
-            <ObjectAttribute title="Observatie" text="{HEADER/ZZOBS}" />
+            <ObjectAttribute  title="Produs" text="{HEADER/MATERIAL}" />
+            <ObjectAttribute  title="Cantitate planificata" text="{HEADER/TOTAL_PLORD_QTY} {path:'HEADER/BASE_UOM', formatter: '.formatter.uom'}"/>
+            <ObjectAttribute  title="Data Start" text="{HEADER/ORDER_START_DATE}" class="boldDate"/>
+            <ObjectAttribute  title="Data Final" text="{HEADER/ORDER_FIN_DATE}"/>
+            <ObjectAttribute  title="Observatie" text="{HEADER/ZZOBS}" />
           </attributes>
         </ObjectListItem>
       </items>

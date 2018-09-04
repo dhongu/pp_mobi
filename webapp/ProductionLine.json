@@ -23,8 +23,7 @@
 			"SET_PROD_LOT": "X",
 			"SET_MOD_FORM":"X",
 			"SUPER_USER":"DHONGU",
-			"REBUT":"",
-				"SEL_LOT":"X"
+			"REBUT":""
 		}, {
 			"WERKS": "2010",
 			"ARBPL": "LM_12",

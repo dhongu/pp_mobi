@@ -9,7 +9,7 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 }
 
 .myAppDemoWT .myCustomText {
-	font-weight: bold;
+  font-weight: bold;
 }
 */
 .sapPageOrderDetail{
@@ -18,30 +18,26 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 
 
 .sapInputRight input {
-	text-align: right;
-	font-size: larger;
+  text-align: right;
+  font-size: larger;
 }
 
 .sapScrap {
-	    background-color: mistyrose;
+      background-color: mistyrose;
 }
 
 .sapScrapComp {
-	    background-color:  #f5b04d; 
+      background-color:  #f5b04d; 
 }
 
 
 .sapConf{
-	background-color: aquamarine;
+  background-color: aquamarine;
 }
 
-.myTest{
-	 font-weight: bold;
-	 color: red;
-}
 
 .sapRed {
-	color: red;
+  color: red;
 }
 
 .checkedButton:focus{
@@ -53,4 +49,13 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 .checkedButton{
   background-color: red!important;
   outline-color: transparent !important;
+}
+
+ul[class^='sapMListModeNone'] li div.sapMObjLBottomRow  > div > div > div span{
+ font-size: -webkit-xxx-large;
+}
+
+.boldDate{
+  font-weight: bold;
+  color: red;
 }
