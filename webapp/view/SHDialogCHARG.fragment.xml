@@ -3,16 +3,16 @@
 	<SelectDialog
 		title="Loturi disponibile"
 		class="sapUiPopupWithPadding"
-		items="{StockCollection>/ROOT/STOCK}"
+		items="{ path: 'StockCollection>/ROOT/STOCK', sorter: { path: 'LWEDT' } }"
 		search="_handleValueHelpSearchCharg"
 		confirm="_handleValueHelpCloseCharg"
 		cancel="_handleValueHelpCloseCharg">
 		<StandardListItem
-			title="{StockCollection>CHARG}"
-			description="{StockCollection>MATL_DESC}" 
+			title="{StockCollection>CHARG} {StockCollection>MATL_DESC}"
+			description="{StockCollection>LGORT}  {StockCollection>LWEDT} " 
 			info="{StockCollection>QTY}"
 			/>
-	</SelectDialog>
+	</SelectDialog> 
 
  
 </core:FragmentDefinition>

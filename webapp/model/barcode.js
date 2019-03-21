@@ -30,9 +30,13 @@ sap.ui.define(function() {
           else {
             if (code.length >= 3) {
               if (focus[0].tagName == "INPUT") {
-                event.target.value = event.target.value.replace(code,'');
+              	if (focus[0].name != 'Input_lot') {
+                	event.target.value = event.target.value.replace(code,'');
+              	}
               }
-              callback(code);
+              else {
+            	callback(code);
+              }
             }
 
           }

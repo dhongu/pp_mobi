@@ -15,6 +15,7 @@
 		},
 		"MAISTRI":[{"NAME":"Vasile"},
 					{"NAME":"Ion"}],
+					
 		"LINES": [{
 			"WERKS": "2010",
 			"ARBPL": "LM_11",
@@ -23,39 +24,55 @@
 			"SET_PROD_LOT": "X",
 			"SET_MOD_FORM":"X",
 			"SUPER_USER":"DHONGU",
-			"REBUT":""
-		}, {
+			"REBUT":"",
+			"SEL_LOT":"X"
+		},
+			{
+			"WERKS": "2010",
+			"ARBPL": "LF_21",
+			"SHORT_TEXT": "Ierarhie test",
+			"BARCODE": "LF_21",
+			"SET_PROD_LOT": "X",
+			"SET_MOD_FORM": "",
+			"SEL_LOT":"X"
+		},
+		{
 			"WERKS": "2010",
 			"ARBPL": "LM_12",
 			"SHORT_TEXT": "Ierarhie linie montaj2 cap.1",
 			"BARCODE": "LM_12",
-			"SET_PROD_LOT": "",
-			"SET_MOD_FORM":"X"
+			"SET_PROD_LOT": "X",
+			"SET_MOD_FORM":"X",
+			"SEL_LOT":"X"
 		}, {
 			"WERKS": "2010",
 			"ARBPL": "LM_13",
 			"SHORT_TEXT": "Ierarhie linie montaj3 cap.1",
 			"BARCODE": "LM_13",
 			"SET_PROD_LOT": "X",
-			"SET_MOD_FORM": ""
+			"SET_MOD_FORM": "",
+			"SEL_LOT":"X"
 		}, {
 			"WERKS": "2010",
 			"ARBPL": "LM_14",
 			"SHORT_TEXT": "Ierarhie linie montaj4 cap.1",
 			"BARCODE": "LM_14",
-			"SET_PROD_LOT": ""
+			"SET_PROD_LOT": "X",
+			"SEL_LOT":"X"
 		}, {
 			"WERKS": "2010",
 			"ARBPL": "LM_15",
 			"SHORT_TEXT": "Ierarhie linie montaj 1 cap.1",
 			"BARCODE": "LM_15",
-			"SET_PROD_LOT": ""
+			"SET_PROD_LOT": "",
+			"SEL_LOT":"X"
 		}, {
 			"WERKS": "2010",
 			"ARBPL": "LM_17",
 			"SHORT_TEXT": "Ierarhie linie montaj 17 cap.1",
 			"BARCODE": "LM_17",
-			"SET_PROD_LOT": ""
+			"SET_PROD_LOT": "",
+			"SEL_LOT":"X"
 		}]
 	}
 }

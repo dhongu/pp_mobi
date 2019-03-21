@@ -21,7 +21,7 @@ sap.ui.define([
 			if (oData.Order) {
 				return $.when( this.unlock_order(oData.Order.HEADER.PLANNEDORDER_NUM)).then(true);
 			}
-			console.log('Am iesit');
+
 		},
 
 		onWindowUnload: function(oEvent) {
@@ -104,7 +104,7 @@ sap.ui.define([
 
 			//var url = oConfig.orderServer + "&resursa="+currentUser.user+"&pass="+currentUser.pass+"&detail=all";
 			//var url = oConfig.orderServer + "&resursa="+currentUser.user+"&pass="+currentUser.pass+"&detail=all";
-			var url = oConfig.serverSAP + "/sap/bc/zppmobi" + oConfig.params; //?detail=" + oResource;
+			var url = oConfig.serverSAP + "/sap/bc/zppmobi" + oConfig.params;
 
 			var parameters = {};
 			if (oConfig.notFromFiori) {
@@ -131,7 +131,7 @@ sap.ui.define([
 			};
 			this._loadResource(oDataModel, oParam, function(oRequest) {
 				var success = oRequest.getParameter("success");
-				var oAllDataModel = oRequest.oSource;
+			//	var oAllDataModel = oRequest.oSource;
 				if (success) {
 					MessageToast.show("Materialele au fost deblocate");
 				} else {

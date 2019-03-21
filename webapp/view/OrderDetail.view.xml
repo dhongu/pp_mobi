@@ -30,11 +30,13 @@
       labelSpanM="4" emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2" class="sapConf">
       <f:content>
         <core:Title text="Confirmare"/>
+        
         <Label text="Masina"/>
-        <ComboBox fieldGroupIds="1" showSecondaryValues="true" items="{ path: 'REPPOINTS', sorter: { path: 'REPPOINT' } }" value="{HEADER/REPPOINT}"
-          change="onChangeRepPoint">
+        <ComboBox id="RepPoint" fieldGroupIds="1" showSecondaryValues="true" items="{ path: 'REPPOINTS', sorter: { path: 'REPPOINT' } }" value="{HEADER/REPPOINT}"
+          change="onChangeRepPoint" required="{path:'HEADER/ZZPKNB', formatter: '.formatter.xfeld'}">
           <core:ListItem key="{REPPOINT}" text="{REPPOINT} {TEXT}" additionalText="{QUANTITY} {path:'UOM' , formatter: '.formatter.uom'}"/>
         </ComboBox>
+        
         <Label text="Data inregistrare"/>
         <DatePicker value="{HEADER/POSTDATE}" valueFormat="yyyy-MM-dd" displayFormat="long" change="handleChangeDate"/>
         <Label id="labelYeld" text="Cantitate {orderdetail>/txtYeldOrScrap}"/>
@@ -52,12 +54,12 @@
         </ComboBox>
         <core:Title text="Depozitare"/>
         <Label text="Lot" visible="{orderdetail>/SetLot}"/>
-        <Input editable="{/ScanMode}" fieldGroupIds="2" name="Input_lot" value="{HEADER/BATCH}" visible="{orderdetail>/SetLot}"/>
+        <Input editable="{/ScanMode}" fieldGroupIds="2"  name="Input_lot" value="{HEADER/BATCH}" visible="{orderdetail>/SetLot}"  change= "onChangeLot"/>
         <Button text="Lot nou" visible="{orderdetail>/SetLot}" icon="sap-icon://create" id="btnCreateLot" press="onPressCreateLot"/>
         <Label text="Modul formare" visible="{orderdetail>/SetModForm}"/>
         <Input editable="{/ScanMode}" fieldGroupIds="2" name="Input_mod_formare" value="{HEADER/MOD_FORM}" visible="{orderdetail>/SetModForm}"/>
         <Label text="Unitate depozitare"/>
-        <Input fieldGroupIds="2" name="Input_ud" value="{HEADER/NLENR}"/>
+        <Input fieldGroupIds="2" name="Input_ud"  value="{HEADER/NLENR}"/>
         <Label text="Observatie"/>
         <Input editable="{/ScanMode}" fieldGroupIds="2" value="{HEADER/ZZOBS}"/>
       </f:content>
@@ -101,7 +103,7 @@
           <items>
             <ColumnListItem>
               <cells>
-                <ObjectIdentifier title="{MATL_DESC} " text="{REQ_QUAN} {path:'BASE_UOM', formatter: '.formatter.uom'}"/>
+                <ObjectIdentifier title="{MATL_DESC} " text="{path:'REQ_QUAN', type:'sap.ui.model.type.Float'} {path:'BASE_UOM', formatter: '.formatter.uom'}"/>
                 <Input editable="{/MaterialIsEditable}" id="productInputMaterial" value="{MATERIAL}"/>
                 <!--
                 <ObjectNumber number="{REQ_QUAN}" unit="{BASE_UOM}" />
@@ -125,7 +127,7 @@
     </Panel>
     <Panel width="auto" expandable="false" expanded="true">
       <content>
-        <Table inset="false" id="charsList" items="{ path: 'CHARS'}" busyIndicatorDelay="0">
+        <Table inset="false" id="charsList" items="{ path: 'CHARS', sorter: { path: 'ATNAM' }}" busyIndicatorDelay="0">
           <columns>
             <Column>
               <Text text="Caracteristica"/>
@@ -143,6 +145,9 @@
                     type="{path:'ATFOR', formatter: '.formatter.type_input'}" visible="{= ${ATFOR} !== 'DATE' }" maxSuggestionWidth="50%"
                     valueHelpRequest="handleValueRequestCharVal"/>
                   <DatePicker fieldGroupIds="Value" value="{VALUE}" valueFormat="yyyy-MM-dd" displayFormat="long" visible="{= ${ATFOR} === 'DATE' }"/>
+               
+                  <Button  icon="sap-icon://duplicate" id="btnSplitItemCharVal" press="onPressSplitCharVal" />
+
                 </FlexBox>
               </cells>
             </ColumnListItem>

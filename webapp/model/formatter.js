@@ -33,7 +33,10 @@ sap.ui.define(function() {
         return "Buc";
       } else if (sUoM === "KG") {
         return "Kg";
-      } else {
+      } else if (sUoM === "M2") {
+        return "m2";
+      }
+      else {
         return sUoM;
       }
     },

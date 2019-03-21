@@ -6,7 +6,7 @@
 		class="sapUiPopupWithPadding"
 		items="{CharValCollection>/}"
 		search="_handleValueHelpSearch"
-		confirm="_handleValueHelpClose"
+		confirm="_handleValueHelpConfirmCharVal"
 		cancel="_handleValueHelpClose">
 		<StandardListItem
 			title="{CharValCollection>ATWRT}"
