@@ -53,12 +53,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 			},
 
 			onBack: function (oEvent) {
-				//popstate 
+				//popstate
 				var oView = this.getView();
 				var oData = oView.getModel().getData();
 				var oOwner = this.getOwnerComponent();
 				oOwner.unlock_order(oData.Order.HEADER.PLANNEDORDER_NUM, self.onFinishNavBack);
-				jQuery(window).off("popstate"); // dezactivare 
+				jQuery(window).off("popstate"); // dezactivare
 			},
 
 			initOrderDetail: function () {
@@ -69,6 +69,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 					'IsYeld': true,
 					'ForUpdate': false,
 					'SetLot': false,
+					'SetLotNou': true,
 					'SetModForm': false,
 					'e_doc': false,
 					'messageSet': [{
@@ -83,7 +84,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 
 			doFinishMatched: function (oEvent) {
 				var self = this;
-				//popstate 
+				//popstate
 				jQuery(window).on("popstate", function (oEvent) {
 					self.onBack(oEvent);
 				});
@@ -157,11 +158,13 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				var oDataLines = oView.getModel("ProductionLineCollection").getData();
 				for (i in oDataLines.ROOT.LINES) {
 					if (oDataLines.ROOT.LINES[i].ARBPL === oData.Order.HEADER.PRODUCTION_LINE) {
-						oDataDetail.Prod_Lot = oDataLines.ROOT.LINES[i].POINT_LOT;
+						oDataDetail.Point_Lot = oDataLines.ROOT.LINES[i].POINT_LOT;
 						if (oDataLines.ROOT.LINES[i].SET_PROD_LOT == '') {
 							oDataDetail.SetLot = false;
+							oDataDetail.SetLotNou = false;
 						} else {
 							oDataDetail.SetLot = true;
+							oDataDetail.SetLotNou = true;
 						}
 						if (oDataLines.ROOT.LINES[i].SET_MOD_FORM === "X") {
 							oDataDetail.SetModForm = true;
@@ -402,9 +405,11 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 					return MessageBox.error("Va rog sa specificati masina!");
 				}
 
-				if (oData.Order.HEADER.REPPOINT != oDataDetail.Point_Lot) {
+				var REPPOINT = oData.Order.HEADER.REPPOINT.substring(0, 4);
+
+				if (REPPOINT != '' && REPPOINT != oDataDetail.Point_Lot) {
 					if (oData.Order.HEADER.BATCH == '' || oData.Order.HEADER.BATCH == 'LOT_NOU') {
-						return MessageBox.error("Va rog sa specificati lotul!");
+						return MessageBox.error("Va rog sa specificati lotul facut la punctul " + oDataDetail.Point_Lot);
 					}
 				}
 
@@ -442,6 +447,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 			onChangeRepPoint: function (oEvent) {
 				// Trebuie sa recalculez cantitatea de YELD
 				var oView = this.getView();
+				var oData = oView.getModel().getData();
 				var oComponentsList = oView.byId("componentsList");
 				var oItem = oEvent.getSource();
 				var value = oItem.getProperty('selectedKey');
@@ -456,6 +462,22 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 					oBinding.filter();
 				}
 				// trebuie sa actualizeaz lista de componente
+
+				var oOrderDetailModel = oView.getModel("orderdetail");
+				var oDataDetail = oOrderDetailModel.getData();
+
+				var REPPOINT = value.substring(0, 4);
+
+				if (REPPOINT != '') {
+					if (oDataDetail.Point_Lot == REPPOINT) {
+						oDataDetail.SetLotNou = true;
+					} else {
+						oDataDetail.SetLotNou = false;
+					};
+					oOrderDetailModel.setData(oDataDetail);
+					oView.setModel(oOrderDetailModel, "orderdetail");
+				}
+
 			},
 
 			handleAddItem: function (oEvent) {
@@ -643,7 +665,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 			onChangeLot: function (oEvent) {
 				var oView = this.getView();
 				var oData = oView.getModel().getData();
-
+				var oInput = oEvent.getSource();
 				var newValue = oEvent.getParameter("value");
 				var oOwner = this.getOwnerComponent();
 				var oDataModel = new JSONModel();
@@ -651,16 +673,22 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 
 					"detail": "get_lot",
 					"matnr": oData.Order.HEADER.MATERIAL,
-					"batch": newValue
+					"batch": newValue,
 				};
 				oView.setBusy(true);
+				oInput.setValueState("None");
 				oOwner._loadResource(oDataModel, oParam, function (oRequest) {
 					oView.setBusy(false);
 					var success = oRequest.getParameter("success");
+
 					if (success) {
 						oDataModel = oRequest.getSource();
-						oData.Order.CHARS = oDataModel.oData.ROOT;
+						oData.Order.CHARS = oDataModel.oData.ROOT.CHARS;
 						oView.getModel().setData(oData);
+						if (oDataModel.oData.ROOT.RETURN.TYPE == 'E') {
+							oInput.setValueState("Error");
+							MessageBox.error("Nu exista lotul sepcificat");
+						};
 					} else {
 						MessageBox.error("Nu se poate accesa serverul de SAP");
 					}
@@ -1029,10 +1057,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller",
 				if (oItems) {
 					oItems.filter([oFilter]);
 					//if (material.SEL_LOT == 'X' ){
-					//	oItems.filter([oFilter]);	
+					//  oItems.filter([oFilter]);
 					//}
 					//else {
-					//	oItems.filter([oFilter,oFilterLGORT]);	
+					//  oItems.filter([oFilter,oFilterLGORT]);
 					//}
 
 					//oItems.sort(oSorter);

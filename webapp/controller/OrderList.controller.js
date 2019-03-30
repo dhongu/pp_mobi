@@ -231,7 +231,7 @@ sap.ui.define([
 					if (success) {
 						if (oAllDataModel.oData.ROOT.RETURN.TYPE != 'E') {
 							MessageToast.show("Materialele au fost blocate");
-							oData.ROOT.ORDERS[PathID]=oAllDataModel.oData.ROOT.ORDERS[0];
+							oData.ROOT.ORDERS[PathID] = oAllDataModel.oData.ROOT.ORDERS[0];
 							oData.Order = oAllDataModel.oData.ROOT.ORDERS[0];
 
 							var oStockData = {
@@ -255,7 +255,7 @@ sap.ui.define([
 								id: PathID
 							});
 						} else {
-							MessageBox.error(oAllDataModel.oData.ROOT.MSG);
+							MessageBox.error(oAllDataModel.oData.ROOT.RETURN.MESSAGE);
 						}
 					} else {
 						MessageBox.error("Nu se poate accesa serverul de SAP");
